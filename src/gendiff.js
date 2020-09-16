@@ -1,4 +1,5 @@
 import program from "commander";
+import diff from "./diff.js";
 
 const start = () => {
   program
@@ -7,8 +8,7 @@ const start = () => {
     .arguments("<filepath1> <filepath2>")
     .option("-f, --format [type]", "output format")
     .action((filepath1, filepath2) => {
-      console.log("filepath1", filepath1);
-      console.log("filepath2", filepath2);
+      console.log(diff(filepath1, filepath2));
     })
     .parse(process.argv);
 };

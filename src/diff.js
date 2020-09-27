@@ -4,11 +4,7 @@ import _ from 'lodash';
 import getParsedData from './parsers.js';
 
 const getFormattedLine = (node, level = 1) => {
-  const indentSpaces = 2;
-  const indent = Array(level * indentSpaces)
-    .fill()
-    .map(() => ' ')
-    .join('');
+  const indent = '  '.repeat(level);
 
   const operationDiffLines = {
     equal: `${indent}  ${node.key}: ${node.value}`,

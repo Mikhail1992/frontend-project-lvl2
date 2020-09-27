@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import _ from "lodash";
-import { getParsedData } from "./parsers";
+import fs from 'fs';
+import path from 'path';
+import _ from 'lodash';
+import getParsedData from './parsers.js';
 
 const getFormattedLine = (node) => {
   const operationDiffLines = {
@@ -22,26 +22,26 @@ const getAst = (initialData, editedData) => {
   const result = keys
     .map((key) => {
       if (
-        _.has(editedData, key) &&
-        _.isEqual(initialData[key], editedData[key])
+        _.has(editedData, key)
+        && _.isEqual(initialData[key], editedData[key])
       ) {
         return {
           key,
           value: editedData[key],
-          status: "equal",
+          status: 'equal',
         };
       }
 
       if (
-        _.has(initialData, key) &&
-        _.has(editedData, key) &&
-        !_.isEqual(initialData[key], editedData[key])
+        _.has(initialData, key)
+        && _.has(editedData, key)
+        && !_.isEqual(initialData[key], editedData[key])
       ) {
         return {
           key,
           value1: initialData[key],
           value2: editedData[key],
-          status: "updated",
+          status: 'updated',
         };
       }
 
@@ -49,7 +49,7 @@ const getAst = (initialData, editedData) => {
         return {
           key,
           value: initialData[key],
-          status: "removed",
+          status: 'removed',
         };
       }
 
@@ -57,7 +57,7 @@ const getAst = (initialData, editedData) => {
         return {
           key,
           value: editedData[key],
-          status: "added",
+          status: 'added',
         };
       }
 
@@ -71,7 +71,7 @@ const getAst = (initialData, editedData) => {
 const getStyledDiff = (initialData, editedData) => {
   const ast = getAst(initialData, editedData);
 
-  return `{\n${ast.map(getFormattedLine).join("\n")}\n}`;
+  return `{\n${ast.map(getFormattedLine).join('\n')}\n}`;
 };
 
 export default (filepath1, filepath2, format) => {

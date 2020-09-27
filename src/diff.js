@@ -73,7 +73,7 @@ const getStyledDiff = (initialData, editedData) => {
   return `{\n${ast.map(getFormattedLine).join('\n')}\n}`;
 };
 
-export default async (filepath1, filepath2) => {
+export default (filepath1, filepath2) => {
   const file1 = fs.readFileSync(path.resolve(filepath1));
   const file2 = fs.readFileSync(path.resolve(filepath2));
 

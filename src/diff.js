@@ -3,12 +3,18 @@ import path from 'path';
 import _ from 'lodash';
 import getParsedData from './parsers.js';
 
-const getFormattedLine = (node) => {
+const getFormattedLine = (node, level = 1) => {
+  const indentSpaces = 2;
+  const indent = Array(level * indentSpaces)
+    .fill()
+    .map(() => ' ')
+    .join('');
+
   const operationDiffLines = {
-    equal: `  ${node.key}: ${node.value}`,
-    removed: `- ${node.key}: ${node.value}`,
-    added: `+ ${node.key}: ${node.value}`,
-    updated: `- ${node.key}: ${node.value1}\n+ ${node.key}: ${node.value2}`,
+    equal: `${indent}  ${node.key}: ${node.value}`,
+    removed: `${indent}- ${node.key}: ${node.value}`,
+    added: `${indent}+ ${node.key}: ${node.value}`,
+    updated: `${indent}- ${node.key}: ${node.value1}\n+ ${node.key}: ${node.value2}`,
   };
 
   return operationDiffLines[node.status];
@@ -71,7 +77,7 @@ const getAst = (initialData, editedData) => {
 const getStyledDiff = (initialData, editedData) => {
   const ast = getAst(initialData, editedData);
 
-  return `{\n${ast.map(getFormattedLine).join('\n')}\n}`;
+  return `{\n${ast.map((line) => getFormattedLine(line)).join('\n')}\n}`;
 };
 
 export default (filepath1, filepath2, format) => {

@@ -1,6 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import _ from 'lodash';
+import fs from "fs";
+import path from "path";
+import _ from "lodash";
+import { getParsedData } from "./parsers";
 
 const getFormattedLine = (node) => {
   const operationDiffLines = {
@@ -21,26 +22,26 @@ const getAst = (initialData, editedData) => {
   const result = keys
     .map((key) => {
       if (
-        _.has(editedData, key)
-        && _.isEqual(initialData[key], editedData[key])
+        _.has(editedData, key) &&
+        _.isEqual(initialData[key], editedData[key])
       ) {
         return {
           key,
           value: editedData[key],
-          status: 'equal',
+          status: "equal",
         };
       }
 
       if (
-        _.has(initialData, key)
-        && _.has(editedData, key)
-        && !_.isEqual(initialData[key], editedData[key])
+        _.has(initialData, key) &&
+        _.has(editedData, key) &&
+        !_.isEqual(initialData[key], editedData[key])
       ) {
         return {
           key,
           value1: initialData[key],
           value2: editedData[key],
-          status: 'updated',
+          status: "updated",
         };
       }
 
@@ -48,7 +49,7 @@ const getAst = (initialData, editedData) => {
         return {
           key,
           value: initialData[key],
-          status: 'removed',
+          status: "removed",
         };
       }
 
@@ -56,7 +57,7 @@ const getAst = (initialData, editedData) => {
         return {
           key,
           value: editedData[key],
-          status: 'added',
+          status: "added",
         };
       }
 
@@ -70,15 +71,17 @@ const getAst = (initialData, editedData) => {
 const getStyledDiff = (initialData, editedData) => {
   const ast = getAst(initialData, editedData);
 
-  return `{\n${ast.map(getFormattedLine).join('\n')}\n}`;
+  return `{\n${ast.map(getFormattedLine).join("\n")}\n}`;
 };
 
-export default (filepath1, filepath2) => {
+export default (filepath1, filepath2, format) => {
+  const filesFormat = format || path.extname(filepath1).slice(1);
+
   const file1 = fs.readFileSync(path.resolve(filepath1));
   const file2 = fs.readFileSync(path.resolve(filepath2));
 
-  const data1 = JSON.parse(file1);
-  const data2 = JSON.parse(file2);
+  const data1 = getParsedData(file1, filesFormat);
+  const data2 = getParsedData(file2, filesFormat);
 
   return getStyledDiff(data1, data2);
 };

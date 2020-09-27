@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import _ from "lodash";
+import fs from 'fs';
+import path from 'path';
+import _ from 'lodash';
 
 const getFormattedLine = (node) => {
   const operationDiffLines = {
@@ -18,47 +18,51 @@ const getAst = (initialData, editedData) => {
     ...new Set([...Object.keys(initialData), ...Object.keys(editedData)]),
   ];
 
-  const result = keys.map((key) => {
-    if (
-      _.has(editedData, key) &&
-      _.isEqual(initialData[key], editedData[key])
-    ) {
-      return {
-        key,
-        value: editedData[key],
-        status: "equal",
-      };
-    }
+  const result = keys
+    .map((key) => {
+      if (
+        _.has(editedData, key)
+        && _.isEqual(initialData[key], editedData[key])
+      ) {
+        return {
+          key,
+          value: editedData[key],
+          status: 'equal',
+        };
+      }
 
-    if (
-      _.has(initialData, key) &&
-      _.has(editedData, key) &&
-      !_.isEqual(initialData[key], editedData[key])
-    ) {
-      return {
-        key,
-        value1: initialData[key],
-        value2: editedData[key],
-        status: "updated",
-      };
-    }
+      if (
+        _.has(initialData, key)
+        && _.has(editedData, key)
+        && !_.isEqual(initialData[key], editedData[key])
+      ) {
+        return {
+          key,
+          value1: initialData[key],
+          value2: editedData[key],
+          status: 'updated',
+        };
+      }
 
-    if (_.has(initialData, key) && !_.has(editedData, key)) {
-      return {
-        key,
-        value: initialData[key],
-        status: "removed",
-      };
-    }
+      if (_.has(initialData, key) && !_.has(editedData, key)) {
+        return {
+          key,
+          value: initialData[key],
+          status: 'removed',
+        };
+      }
 
-    if (!_.has(initialData, key) && _.has(editedData, key)) {
-      return {
-        key,
-        value: editedData[key],
-        status: "added",
-      };
-    }
-  });
+      if (!_.has(initialData, key) && _.has(editedData, key)) {
+        return {
+          key,
+          value: editedData[key],
+          status: 'added',
+        };
+      }
+
+      return null;
+    })
+    .filter((v) => v);
 
   return result;
 };
@@ -66,7 +70,7 @@ const getAst = (initialData, editedData) => {
 const getStyledDiff = (initialData, editedData) => {
   const ast = getAst(initialData, editedData);
 
-  return `{\n${ast.map(getFormattedLine).join("\n")}\n}`;
+  return `{\n${ast.map(getFormattedLine).join('\n')}\n}`;
 };
 
 export default async (filepath1, filepath2) => {

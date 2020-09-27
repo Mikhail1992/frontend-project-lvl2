@@ -6,3 +6,6 @@ JSON parser
 
 YML parser
 <a href="https://asciinema.org/a/7AtcqJt9AawDlACagEdxAyGQl" target="_blank"><img src="https://asciinema.org/a/7AtcqJt9AawDlACagEdxAyGQl.svg" /></a>
+
+INI parser
+<a href="https://asciinema.org/a/EWR9UOv2IJfJemny5IP6838i0" target="_blank"><img src="https://asciinema.org/a/EWR9UOv2IJfJemny5IP6838i0.svg" /></a>

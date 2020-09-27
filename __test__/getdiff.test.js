@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-const formats = ['yml', 'json'];
+const formats = ['yml', 'json', 'ini'];
 
 describe('gendiff', () => {
   test.each(formats)('gendiff %s', (format) => {

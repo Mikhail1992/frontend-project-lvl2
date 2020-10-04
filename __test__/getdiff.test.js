@@ -15,6 +15,7 @@ const formats = ['yml', 'json', 'ini'];
 describe('gendiff', () => {
   const stylishResult = readFile('result-stylish.txt');
   const plainResult = readFile('result-plain.txt');
+  const jsonResult = readFile('result-json.json');
 
   test.each(formats)('gendiff %s', (format) => {
     // arrange
@@ -24,5 +25,6 @@ describe('gendiff', () => {
     // assert
     expect(gendiff(filepath1, filepath2)).toEqual(stylishResult);
     expect(gendiff(filepath1, filepath2, 'plain')).toEqual(plainResult);
+    expect(gendiff(filepath1, filepath2, 'json')).toEqual(jsonResult);
   });
 });

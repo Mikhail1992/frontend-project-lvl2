@@ -23,7 +23,7 @@ const mapping = {
 };
 
 const plainFormatter = (ast, path = []) => `${ast
-  .map((line) => mapping[line.status](line, path, plainFormatter))
+  .map((line) => mapping[line.type](line, path, plainFormatter))
   .filter((x) => x)
   .join('\n')}`;
 

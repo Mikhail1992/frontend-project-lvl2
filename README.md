@@ -20,3 +20,7 @@
 ### Plain
 
 <a href="https://asciinema.org/a/8vvOGCsXI63W2KTMz15p3HkNR" target="_blank"><img src="https://asciinema.org/a/8vvOGCsXI63W2KTMz15p3HkNR.svg" /></a>
+
+### JSON
+
+<a href="https://asciinema.org/a/WfEfRnBRsgw6tcah83gclLY9O" target="_blank"><img src="https://asciinema.org/a/WfEfRnBRsgw6tcah83gclLY9O.svg" /></a>

@@ -35,7 +35,7 @@ const mapping = {
 };
 
 const stylishFormatter = (ast, level = 1) => `{\n${ast
-  .map((line) => mapping[line.status](line, level, stylishFormatter))
+  .map((line) => mapping[line.type](line, level, stylishFormatter))
   .join('\n')}\n${depth(level - 1)}}`;
 
 export default stylishFormatter;

@@ -15,24 +15,24 @@ const generateAst = (data1, data2) => {
     if (!_.has(data1, key) && _.has(data2, key)) {
       return {
         key,
+        type: 'added',
         value: updatedValue,
-        status: 'added',
       };
     }
 
     if (_.has(data1, key) && !_.has(data2, key)) {
       return {
         key,
+        type: 'removed',
         value: initialValue,
-        status: 'removed',
       };
     }
 
     if (_._.isPlainObject(initialValue) && _._.isPlainObject(updatedValue)) {
       return {
         key,
+        type: 'nested',
         children: generateAst(initialValue, updatedValue),
-        status: 'nested',
       };
     }
 
@@ -43,16 +43,16 @@ const generateAst = (data1, data2) => {
     ) {
       return {
         key,
+        type: 'updated',
         value1: initialValue,
         value2: updatedValue,
-        status: 'updated',
       };
     }
 
     return {
       key,
+      type: 'equal',
       value: updatedValue,
-      status: 'equal',
     };
   });
 
@@ -69,5 +69,6 @@ export default (filepath1, filepath2, format = 'stylish') => {
   const data2 = getParsedData(file2, filesFormat);
 
   const ast = generateAst(data1, data2);
+
   return formatter(ast, format);
 };

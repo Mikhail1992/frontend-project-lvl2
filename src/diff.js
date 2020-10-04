@@ -2,78 +2,67 @@ import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
 import getParsedData from './parsers.js';
+import formatter from './formatters/index.js';
 
-const getFormattedLine = (node, level = 1) => {
-  const indent = '  '.repeat(level);
+const generateAst = (data1, data2) => {
+  const keys = [...new Set([...Object.keys(data1), ...Object.keys(data2)])];
+  const sortedKeys = _.sortBy(keys);
 
-  const operationDiffLines = {
-    equal: `${indent}  ${node.key}: ${node.value}`,
-    removed: `${indent}- ${node.key}: ${node.value}`,
-    added: `${indent}+ ${node.key}: ${node.value}`,
-    updated: `${indent}- ${node.key}: ${node.value1}\n+ ${node.key}: ${node.value2}`,
-  };
+  const result = sortedKeys.map((key) => {
+    const initialValue = data1[key];
+    const updatedValue = data2[key];
 
-  return operationDiffLines[node.status];
-};
+    if (!_.has(data1, key) && _.has(data2, key)) {
+      return {
+        key,
+        value: updatedValue,
+        status: 'added',
+      };
+    }
 
-const getAst = (initialData, editedData) => {
-  const keys = [
-    ...new Set([...Object.keys(initialData), ...Object.keys(editedData)]),
-  ];
+    if (_.has(data1, key) && !_.has(data2, key)) {
+      return {
+        key,
+        value: initialValue,
+        status: 'removed',
+      };
+    }
 
-  const result = keys
-    .map((key) => {
-      if (
-        _.has(editedData, key)
-        && _.isEqual(initialData[key], editedData[key])
-      ) {
-        return {
-          key,
-          value: editedData[key],
-          status: 'equal',
-        };
-      }
+    if (_._.isPlainObject(initialValue) && _._.isPlainObject(updatedValue)) {
+      return {
+        key,
+        children: generateAst(initialValue, updatedValue),
+        status: 'nested',
+      };
+    }
 
-      if (
-        _.has(initialData, key)
-        && _.has(editedData, key)
-        && !_.isEqual(initialData[key], editedData[key])
-      ) {
-        return {
-          key,
-          value1: initialData[key],
-          value2: editedData[key],
-          status: 'updated',
-        };
-      }
+    if (
+      _.has(data1, key)
+      && _.has(data2, key)
+      && !_.isEqual(initialValue, updatedValue)
+    ) {
+      return {
+        key,
+        value1: initialValue,
+        value2: updatedValue,
+        status: 'updated',
+      };
+    }
 
-      if (_.has(initialData, key) && !_.has(editedData, key)) {
-        return {
-          key,
-          value: initialData[key],
-          status: 'removed',
-        };
-      }
-
-      if (!_.has(initialData, key) && _.has(editedData, key)) {
-        return {
-          key,
-          value: editedData[key],
-          status: 'added',
-        };
-      }
-
-      return null;
-    })
-    .filter((v) => v);
+    return {
+      key,
+      value: updatedValue,
+      status: 'equal',
+    };
+  });
 
   return result;
 };
 
-const getStyledDiff = (initialData, editedData) => {
-  const ast = getAst(initialData, editedData);
+const getStyledDiff = (data1, data2) => {
+  const ast = generateAst(data1, data2);
 
-  return `{\n${ast.map((line) => getFormattedLine(line)).join('\n')}\n}`;
+  return formatter(ast);
 };
 
 export default (filepath1, filepath2, format) => {

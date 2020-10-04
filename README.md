@@ -12,3 +12,7 @@
 ### INI parser
 
 <a href="https://asciinema.org/a/EWR9UOv2IJfJemny5IP6838i0" target="_blank"><img src="https://asciinema.org/a/EWR9UOv2IJfJemny5IP6838i0.svg" /></a>
+
+### Stylish
+
+<a href="https://asciinema.org/a/at6yFhmO7bzukHov5FVb1vNs9" target="_blank"><img src="https://asciinema.org/a/at6yFhmO7bzukHov5FVb1vNs9.svg" /></a>

@@ -8,6 +8,7 @@ const start = () => {
     .arguments('<filepath1> <filepath2>')
     .option('-f, --format [type]', 'output format')
     .action((filepath1, filepath2) => {
+      console.log('program', program.type);
       console.log(diff(filepath1, filepath2, program.format));
     })
     .parse(process.argv);

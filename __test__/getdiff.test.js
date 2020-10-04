@@ -13,15 +13,16 @@ const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8'
 const formats = ['yml', 'json', 'ini'];
 
 describe('gendiff', () => {
+  const stylishResult = readFile('result-stylish.txt');
+  const plainResult = readFile('result-plain.txt');
+
   test.each(formats)('gendiff %s', (format) => {
     // arrange
-    const filepath1 = getFixturePath(`${format}/file1.${format}`);
-    const filepath2 = getFixturePath(`${format}/file2.${format}`);
-
-    // act
-    const actual = readFile(`${format}/result.txt`);
+    const filepath1 = getFixturePath(`file1.${format}`);
+    const filepath2 = getFixturePath(`file2.${format}`);
 
     // assert
-    expect(gendiff(filepath1, filepath2)).toEqual(actual);
+    expect(gendiff(filepath1, filepath2)).toEqual(stylishResult);
+    expect(gendiff(filepath1, filepath2, 'plain')).toEqual(plainResult);
   });
 });

@@ -59,14 +59,8 @@ const generateAst = (data1, data2) => {
   return result;
 };
 
-const getStyledDiff = (data1, data2) => {
-  const ast = generateAst(data1, data2);
-
-  return formatter(ast);
-};
-
-export default (filepath1, filepath2, format) => {
-  const filesFormat = format || path.extname(filepath1).slice(1);
+export default (filepath1, filepath2, format = 'stylish') => {
+  const filesFormat = path.extname(filepath1).slice(1);
 
   const file1 = fs.readFileSync(path.resolve(filepath1));
   const file2 = fs.readFileSync(path.resolve(filepath2));
@@ -74,5 +68,6 @@ export default (filepath1, filepath2, format) => {
   const data1 = getParsedData(file1, filesFormat);
   const data2 = getParsedData(file2, filesFormat);
 
-  return getStyledDiff(data1, data2);
+  const ast = generateAst(data1, data2);
+  return formatter(ast, format);
 };

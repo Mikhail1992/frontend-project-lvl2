@@ -16,3 +16,7 @@
 ### Stylish
 
 <a href="https://asciinema.org/a/at6yFhmO7bzukHov5FVb1vNs9" target="_blank"><img src="https://asciinema.org/a/at6yFhmO7bzukHov5FVb1vNs9.svg" /></a>
+
+### Plain
+
+<a href="https://asciinema.org/a/8vvOGCsXI63W2KTMz15p3HkNR" target="_blank"><img src="https://asciinema.org/a/8vvOGCsXI63W2KTMz15p3HkNR.svg" /></a>

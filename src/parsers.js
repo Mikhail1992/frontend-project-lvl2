@@ -14,7 +14,7 @@ const parseNumber = (obj) => _.mapValues(obj, (value) => {
 });
 
 const iniParser = (content) => {
-  const data = ini.parse(content);
+  const data = ini.parse(content.toString());
   return parseNumber(data);
 };
 
@@ -25,6 +25,6 @@ const parsers = {
   ini: iniParser,
 };
 
-const getParsedData = (data, format) => parsers[format](data.toString());
+const getParsedData = (data, format) => parsers[format](data);
 
 export default getParsedData;

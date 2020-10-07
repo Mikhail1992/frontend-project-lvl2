@@ -1,32 +1,32 @@
 import _ from 'lodash';
 
-const depth = (level) => '  '.repeat(level);
+const depth = (indent) => '  '.repeat(indent);
 
-const parser = (data, level, mapping) => {
+const parser = (data, indent, mapping) => {
   if (!_.isObject(data)) {
     return data;
   }
 
-  const dataKeysList = Object.keys(data);
-  const stringLine = dataKeysList.map((key) => mapping.equal({ key, value: data[key] }, level + 2));
+  const keys = Object.keys(data);
+  const stringLine = keys.map((key) => mapping.equal({ key, value: data[key] }, indent + 2));
 
-  return `{\n${stringLine.join('\n')}\n${depth(level + 1)}}`;
+  return `{\n${stringLine.join('\n')}\n${depth(indent + 1)}}`;
 };
 
 const mapping = {
-  nested: (node, level, parseNested) => `${depth(level)}  ${node.key}: ${parseNested(node.children, level + 2)}`,
-  equal: (node, level) => `${depth(level)}  ${node.key}: ${parser(node.value, level, mapping)}`,
-  removed: (node, level) => `${depth(level)}- ${node.key}: ${parser(node.value, level, mapping)}`,
-  added: (node, level) => `${depth(level)}+ ${node.key}: ${parser(node.value, level, mapping)}`,
-  updated: (node, level) => {
-    const line1 = `${depth(level)}- ${node.key}: ${parser(
+  nested: (node, indent, parseNested) => `${depth(indent)}  ${node.key}: ${parseNested(node.children, indent + 2)}`,
+  equal: (node, indent) => `${depth(indent)}  ${node.key}: ${parser(node.value, indent, mapping)}`,
+  removed: (node, indent) => `${depth(indent)}- ${node.key}: ${parser(node.value, indent, mapping)}`,
+  added: (node, indent) => `${depth(indent)}+ ${node.key}: ${parser(node.value, indent, mapping)}`,
+  updated: (node, indent) => {
+    const line1 = `${depth(indent)}- ${node.key}: ${parser(
       node.value1,
-      level,
+      indent,
       mapping,
     )}`;
-    const line2 = `${depth(level)}+ ${node.key}: ${parser(
+    const line2 = `${depth(indent)}+ ${node.key}: ${parser(
       node.value2,
-      level,
+      indent,
       mapping,
     )}`;
 

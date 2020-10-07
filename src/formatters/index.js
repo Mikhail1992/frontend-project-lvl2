@@ -7,6 +7,6 @@ const formatters = {
   json: JSON.stringify,
 };
 
-const formatter = (ast, type) => formatters[type](ast);
+const getFormattedData = (ast, type) => formatters[type](ast);
 
-export default formatter;
+export default getFormattedData;

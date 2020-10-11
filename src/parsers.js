@@ -14,7 +14,7 @@ const parseNumber = (obj) => _.mapValues(obj, (value) => {
 });
 
 const iniParser = (content) => {
-  const data = ini.parse(content.toString());
+  const data = ini.parse(content);
   return parseNumber(data);
 };
 

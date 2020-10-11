@@ -16,7 +16,7 @@ const generateAst = (data1, data2) => {
       };
     }
 
-    if (_.has(data1, key) && !_.has(data2, key)) {
+    if (!_.has(data2, key)) {
       return {
         key,
         type: 'removed',

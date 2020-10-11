@@ -18,13 +18,18 @@ const mapping = {
   nested: (node, path, parseNested) => `${parseNested(node.children, [...path, node.key])}`,
   equal: () => null,
   removed: (node, path) => `Property '${getFullPath([...path, node.key])}' was removed`,
-  added: (node, path) => `Property '${getFullPath([...path, node.key])}' was added with value: ${parser(node.value)}`,
-  updated: (node, path) => `Property '${getFullPath([...path, node.key])}' was updated. From ${parser(node.value1)} to ${parser(node.value2)}`,
+  added: (node, path) => `Property '${getFullPath([
+    ...path,
+    node.key,
+  ])}' was added with value: ${parser(node.value)}`,
+  updated: (node, path) => `Property '${getFullPath([...path, node.key])}' was updated. From ${parser(
+    node.value1,
+  )} to ${parser(node.value2)}`,
 };
 
-const plainFormatter = (ast, path = []) => `${ast
-  .map((line) => mapping[line.type](line, path, plainFormatter))
+const renderPlain = (ast, path = []) => `${ast
+  .map((line) => mapping[line.type](line, path, renderPlain))
   .filter((x) => x)
   .join('\n')}`;
 
-export default plainFormatter;
+export default renderPlain;

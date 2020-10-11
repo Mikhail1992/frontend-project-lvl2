@@ -1,41 +1,49 @@
 import _ from 'lodash';
 
-const depth = (indent) => '  '.repeat(indent);
+const indent = (level) => '  '.repeat(level);
 
-const parser = (data, indent, mapping) => {
+const stringify = (data, depth, mapping) => {
   if (!_.isObject(data)) {
     return data;
   }
 
-  const keys = Object.keys(data);
-  const stringLine = keys.map((key) => mapping.equal({ key, value: data[key] }, indent + 2));
+  const result = Object.entries(data).map(([key, value]) => (
+    mapping.equal({ key, value }, depth + 2)));
 
-  return `{\n${stringLine.join('\n')}\n${depth(indent + 1)}}`;
+  return `{\n${result.join('\n')}\n${indent(depth + 2)}}`;
 };
 
 const mapping = {
-  nested: (node, indent, parseNested) => `${depth(indent)}  ${node.key}: ${parseNested(node.children, indent + 2)}`,
-  equal: (node, indent) => `${depth(indent)}  ${node.key}: ${parser(node.value, indent, mapping)}`,
-  removed: (node, indent) => `${depth(indent)}- ${node.key}: ${parser(node.value, indent, mapping)}`,
-  added: (node, indent) => `${depth(indent)}+ ${node.key}: ${parser(node.value, indent, mapping)}`,
-  updated: (node, indent) => {
-    const line1 = `${depth(indent)}- ${node.key}: ${parser(
-      node.value1,
-      indent,
+  nested: (node, depth, iter) => `${indent(depth)}    ${node.key}: ${iter(node.children, depth + 2)}`,
+  added: (node, depth) => `${indent(depth)}  + ${node.key}: ${stringify(node.value, depth, mapping)}`,
+  removed: (node, depth) => `${indent(depth)}  - ${node.key}: ${stringify(node.value, depth, mapping)}`,
+  equal: (node, depth) => `${indent(depth)}    ${node.key}: ${stringify(node.value, depth, mapping)}`,
+  updated: (node, depth) => {
+    const { key, value1, value2 } = node;
+
+    const data1 = `${indent(depth)}  - ${key}: ${stringify(
+      value1,
+      depth,
       mapping,
     )}`;
-    const line2 = `${depth(indent)}+ ${node.key}: ${parser(
-      node.value2,
-      indent,
+    const data2 = `${indent(depth)}  + ${key}: ${stringify(
+      value2,
+      depth,
       mapping,
     )}`;
 
-    return `${line1}\n${line2}`;
+    return [data1, data2];
   },
 };
 
-const stylishFormatter = (ast, level = 1) => `{\n${ast
-  .map((line) => mapping[line.type](line, level, stylishFormatter))
-  .join('\n')}\n${depth(level - 1)}}`;
+const renderStylish = (ast) => {
+  const iter = (subtree, depth) => {
+    const result = subtree.flatMap((node) => mapping[node.type](node, depth, iter));
 
-export default stylishFormatter;
+    return `{\n${result.join('\n')}\n${indent(depth)}}`;
+  };
+
+  return iter(ast, 0);
+};
+
+export default renderStylish;
